@@ -47,7 +47,7 @@ class UserController {
       ),
     });
 
-    if (!(await schema().isValid(req.body))) {
+    if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation Fails' });
     }
 
@@ -67,13 +67,14 @@ class UserController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    const { id, name, provider } = await user.update(req.body);
+    const { id, name, provider, avatar_id } = await user.update(req.body);
 
     return res.json({
       id,
       name,
       provider,
       email,
+      avatar_id,
     });
   }
 }
