@@ -25,9 +25,6 @@ class AppointmentControler {
         .json({ error: 'You can only create appointments with providers' });
     }
 
-    console.log(req.userId, provider_id, date);
-
-    // TODO Check null value when insert in database
     const appointment = await Appointment.create({
       user_id: req.userId,
       provider_id,
