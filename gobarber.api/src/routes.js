@@ -26,8 +26,12 @@ routes.get('/providers', ProviderController.index);
 routes.post('/files', upload.single('file'), FileController.store);
 
 routes.post('/appointments', authMiddleware, AppointmentController.store);
-
 routes.get('/appointments', authMiddleware, AppointmentController.index);
+routes.delete(
+  '/appointments/:id',
+  authMiddleware,
+  AppointmentController.delete
+);
 
 routes.get('/schedules', authMiddleware, ScheduleController.index);
 
