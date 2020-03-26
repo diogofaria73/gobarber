@@ -1,2 +1,6 @@
 node_modules
 src/config/database.js/
+
+
+netstat -ano | findstr :port
+taskkill /PID xxxx /F
