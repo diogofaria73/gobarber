@@ -1,12 +1,12 @@
 module.exports = {
   dialect: 'postgres',
-  host: 'gobarberdb.cwh4nwo5p4o3.us-east-2.rds.amazonaws.com',
+  host: 'localhost',
   username: 'postgres',
-  password: 'gobarber',
-  database: 'gobarberdb',
+  password: 'fadababaca',
+  database: 'gobarber',
   define: {
-    timestamps: true,
+    timestamp: true,
     underscored: true,
-    underscoredAll: true,
+    undersocredAll: true,
   },
 };
