@@ -1,21 +1,26 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Form, Input } from '@rocketseat/unform';
 import * as Yup from 'yup';
+import { singInRequest } from '~/store/modules/auth/actions';
+
 import logo from '~/assets/logo.svg';
 
-function SingIn() {
-  const schema = Yup.object().shape({
-    email: Yup.string()
-      .email('Insira um e-mail válido')
-      .required('O e-mail é obrigatório'),
-    password: Yup.string()
-      .min(6, 'No minimo 6 caracteres')
-      .required('A senha é obrigatória'),
-  });
+const schema = Yup.object().shape({
+  email: Yup.string()
+    .email('Insira um e-mail válido')
+    .required('O e-mail é obrigatório'),
+  password: Yup.string()
+    .min(6, 'No minimo 6 caracteres')
+    .required('A senha é obrigatória'),
+});
 
-  function handleSubmit(data) {
-    console.tron.log(data);
+export default function SingIn() {
+  const dispatch = useDispatch();
+
+  function handleSubmit({ email, password }) {
+    dispatch(singInRequest(email, password));
   }
 
   return (
@@ -32,5 +37,3 @@ function SingIn() {
     </>
   );
 }
-
-export default SingIn;
