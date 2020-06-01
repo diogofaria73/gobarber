@@ -1,25 +1,31 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
 import api from '~/services/api';
 import history from '~/services/history';
 
-import { singInSuccess } from './actions';
+import { singInSuccess, singFailure } from './actions';
 
 export function* singIn({ payload }) {
-  const { email, password } = payload;
+  try {
+    const { email, password } = payload;
 
-  const response = yield call(api.post, 'sessions', {
-    email,
-    password,
-  });
+    const response = yield call(api.post, 'sessions', {
+      email,
+      password,
+    });
 
-  const { token, user } = response.data;
+    const { token, user } = response.data;
 
-  if (!user.provider) {
-    console.tron.error('O Usuário não é prestador de serviços');
-    return;
+    if (!user.provider) {
+      toast.error('O Usuário não é prestador de serviços');
+      return;
+    }
+    yield put(singInSuccess(token, user));
+
+    history.push('/dashboard');
+  } catch (error) {
+    toast.error('Falha na autenticação do usuário');
+    yield put(singFailure());
   }
-  yield put(singInSuccess(token, user));
-
-  history.push('/dashboard');
 }
 export default all([takeLatest('@auth/SING_IN_REQUEST', singIn)]);
