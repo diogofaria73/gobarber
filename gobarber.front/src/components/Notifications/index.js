@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { parseISO, formatDistance } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import { MdNotifications } from 'react-icons/md';
 import api from '~/services/api';
 
@@ -17,12 +19,36 @@ export default function Notifications() {
   useEffect(() => {
     async function loadNotifications() {
       const response = await api.get('notifications');
-      setNotifications(response.data);
+
+      const data = response.data.map((notification) => ({
+        ...notification,
+        timeDistance: formatDistance(
+          parseISO(notification.createdAt),
+          new Date(),
+          {
+            addSuffix: true,
+            locale: pt,
+          }
+        ),
+      }));
+      setNotifications(data);
     }
-  });
+
+    loadNotifications();
+  }, []);
 
   function handleToggleVisible() {
     setVisible(!visible);
+  }
+
+  async function handleMarkAsRead(id) {
+    await api.put(`/notifications/${id}`);
+
+    setNotifications(
+      notifications.map((notification) =>
+        notification._id === id ? { ...notification, read: true } : notification
+      )
+    );
   }
 
   return (
@@ -32,36 +58,18 @@ export default function Notifications() {
       </Badge>
       <NotificationList visible={visible}>
         <Scroll>
-          <Notification unread>
-            <p>Você possui um novo agendamento</p>
-            <time>há 2 dias</time>
-            <button type="button">Marcar como Lida</button>
-          </Notification>
-          <Notification>
-            <p>Você possui um novo agendamento</p>
-            <time>há 2 dias</time>
-            <button type="button">Marcar como Lida</button>
-          </Notification>
-          <Notification>
-            <p>Você possui um novo agendamento</p>
-            <time>há 2 dias</time>
-            <button type="button">Marcar como Lida</button>
-          </Notification>
-          <Notification>
-            <p>Você possui um novo agendamento</p>
-            <time>há 2 dias</time>
-            <button type="button">Marcar como Lida</button>
-          </Notification>
-          <Notification>
-            <p>Você possui um novo agendamento</p>
-            <time>há 2 dias</time>
-            <button type="button">Marcar como Lida</button>
-          </Notification>
-          <Notification>
-            <p>Você possui um novo agendamento</p>
-            <time>há 2 dias</time>
-            <button type="button">Marcar como Lida</button>
-          </Notification>
+          {notifications.map((notification) => (
+            <Notification key={notification._id} unread={!notification.read}>
+              <p>{notification.content}</p>
+              <time>{notification.timeDistance}</time>
+              <button
+                type="button"
+                onClick={() => handleMarkAsRead(notification._id)}
+              >
+                Marcar como Lida
+              </button>
+            </Notification>
+          ))}
         </Scroll>
       </NotificationList>
     </Container>
