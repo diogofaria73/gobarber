@@ -3,9 +3,9 @@ import { toast } from 'react-toastify';
 import api from '~/services/api';
 import history from '~/services/history';
 
-import { singInSuccess, singFailure } from './actions';
+import { signInSuccess, signFailure } from './actions';
 
-export function* singIn({ payload }) {
+export function* signIn({ payload }) {
   try {
     const { email, password } = payload;
 
@@ -20,16 +20,18 @@ export function* singIn({ payload }) {
       toast.error('O Usuário não é prestador de serviços');
       return;
     }
-    yield put(singInSuccess(token, user));
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+
+    yield put(signInSuccess(token, user));
 
     history.push('/dashboard');
   } catch (error) {
     toast.error('Falha na autenticação, verfique seus dados');
-    yield put(singFailure());
+    yield put(signFailure());
   }
 }
 
-export function* singUp({ payload }) {
+export function* signUp({ payload }) {
   const { name, email, password } = payload;
 
   try {
@@ -43,7 +45,7 @@ export function* singUp({ payload }) {
     history.push('/');
   } catch (error) {
     toast.error('Falha no cadastro, verifique os campos informados');
-    yield put(singFailure());
+    yield put(signFailure());
   }
 }
 
@@ -59,6 +61,6 @@ export function setToken({ payload }) {
 
 export default all([
   takeLatest('persist/REHYDRATE', setToken),
-  takeLatest('@auth/SING_IN_REQUEST', singIn),
-  takeLatest('@auth/SING_UP_REQUEST', singUp),
+  takeLatest('@auth/SIGN_IN_REQUEST', signIn),
+  takeLatest('@auth/SIGN_UP_REQUEST', signUp),
 ]);

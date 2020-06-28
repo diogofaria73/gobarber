@@ -12,7 +12,7 @@ export default function Profile() {
   console.log(profile);
 
   function handleSubmit(data) {
-    // console.tron.log(data);
+    console.tron.log(data);
     dispatch(updateProfileRequest(data));
   }
 
