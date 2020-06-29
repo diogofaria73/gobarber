@@ -8,11 +8,8 @@ import { Container } from './styles';
 export default function Profile() {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.user.profile);
-  // eslint-disable-next-line no-console
-  console.log(profile);
 
   function handleSubmit(data) {
-    console.tron.log(data);
     dispatch(updateProfileRequest(data));
   }
 
